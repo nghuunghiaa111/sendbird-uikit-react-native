@@ -46,6 +46,8 @@ export interface GroupChannelProps {
     queryCreator?: UseGroupChannelMessagesOptions['queryCreator'];
 
     searchItem?: GroupChannelProps['MessageList']['searchItem'];
+    
+    groupChannelPubSub?: PubSub<GroupChannelPubSubContextPayload>;
 
     /** @deprecated Please use `onPressMediaMessage` instead **/
     onPressImageMessage?: GroupChannelProps['MessageList']['onPressImageMessage'];

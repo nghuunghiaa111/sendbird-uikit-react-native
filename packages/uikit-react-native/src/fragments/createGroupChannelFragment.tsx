@@ -51,13 +51,16 @@ const createGroupChannelFragment = (initModule?: Partial<GroupChannelModule>): G
     sortComparator = messageComparator,
     flatListProps,
     onPressImageMessage,
+    groupChannelPubSub
   }) => {
     const { sdk, currentUser } = useSendbirdChat();
 
     const [internalSearchItem, setInternalSearchItem] = useState(searchItem);
     const navigateFromMessageSearch = useCallback(() => Boolean(searchItem), []);
 
-    const [groupChannelPubSub] = useState(() => pubsub<GroupChannelPubSubContextPayload>());
+    if (!groupChannelPubSub) {
+      [groupChannelPubSub] = useState(() => pubsub<GroupChannelPubSubContextPayload>());
+    }
     const [scrolledAwayFromBottom, setScrolledAwayFromBottom] = useState(false);
     const scrolledAwayFromBottomRef = useRefTracker(scrolledAwayFromBottom);
 
@@ -84,7 +87,7 @@ const createGroupChannelFragment = (initModule?: Partial<GroupChannelModule>): G
       enableCollectionWithoutLocalCache: !queryCreator,
       shouldCountNewMessages: () => scrolledAwayFromBottomRef.current,
       onMessagesReceived(messages) {
-        groupChannelPubSub.publish({ type: 'MESSAGES_RECEIVED', data: { messages } });
+        groupChannelPubSub?.publish({ type: 'MESSAGES_RECEIVED', data: { messages } });
       },
       startingPoint: internalSearchItem?.startingPoint,
     });
@@ -109,11 +112,11 @@ const createGroupChannelFragment = (initModule?: Partial<GroupChannelModule>): G
     }, []);
 
     const onPending = (message: SendbirdFileMessage | SendbirdUserMessage) => {
-      groupChannelPubSub.publish({ type: 'MESSAGE_SENT_PENDING', data: { message } });
+      groupChannelPubSub?.publish({ type: 'MESSAGE_SENT_PENDING', data: { message } });
     };
 
     const onSent = (message: SendbirdFileMessage | SendbirdUserMessage) => {
-      groupChannelPubSub.publish({ type: 'MESSAGE_SENT_SUCCESS', data: { message } });
+      groupChannelPubSub?.publish({ type: 'MESSAGE_SENT_SUCCESS', data: { message } });
     };
 
     const onPressSendUserMessage: GroupChannelProps['Input']['onPressSendUserMessage'] = useFreshCallback(
@@ -189,7 +192,7 @@ const createGroupChannelFragment = (initModule?: Partial<GroupChannelModule>): G
     return (
       <GroupChannelModule.Provider
         channel={channel}
-        groupChannelPubSub={groupChannelPubSub}
+        groupChannelPubSub={groupChannelPubSub?}
         enableTypingIndicator={enableTypingIndicator}
         keyboardAvoidOffset={keyboardAvoidOffset}
       >

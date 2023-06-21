@@ -71,14 +71,17 @@ const GroupChannelMessageList = (props: GroupChannelProps['MessageList']) => {
     return subscribe(({ type }) => {
       switch (type) {
         case 'MESSAGES_RECEIVED': {
-          if (!props.scrolledAwayFromBottom) {
+          // Always scroll to bottom when have new message
+          // if (!props.scrolledAwayFromBottom) {
             scrollToBottom(true);
-          }
+          // }
           break;
         }
         case 'MESSAGE_SENT_SUCCESS':
         case 'MESSAGE_SENT_PENDING': {
-          scrollToBottom(false);
+          // scrollToBottom(false);
+          // animate even when message sent by current user
+          scrollToBottom(true);
           break;
         }
       }
