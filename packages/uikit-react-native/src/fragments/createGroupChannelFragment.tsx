@@ -192,7 +192,7 @@ const createGroupChannelFragment = (initModule?: Partial<GroupChannelModule>): G
     return (
       <GroupChannelModule.Provider
         channel={channel}
-        groupChannelPubSub={groupChannelPubSub?}
+        groupChannelPubSub={groupChannelPubSub!}
         enableTypingIndicator={enableTypingIndicator}
         keyboardAvoidOffset={keyboardAvoidOffset}
       >
